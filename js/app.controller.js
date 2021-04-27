@@ -50,8 +50,8 @@ function getPosition() {
 
 function catchParams(){
     const urlParams = new URLSearchParams(window.location.search);
-    const latParam = urlParams.get('lat');
-    const lngParam= urlParams.get('lng');
+    const latParam = +urlParams.get('lat');
+    const lngParam= +urlParams.get('lng');
     console.log(lngParam,latParam)
     if(!(latParam||lngParam))return
     mapService.panTo(latParam, lngParam)
