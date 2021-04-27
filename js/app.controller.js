@@ -52,10 +52,8 @@ function catchParams(){
     const lngParam= urlParams.get('lng');
     if(!(latParam||lngParam))return
     mapService.panTo(lat, lng)
-    map.service(get)
     onAddPos({lat:latParam,lng:lngParam})
 }
-
 
 function onClickMap(ev) {//first create object with name and loc(maybe weather also) and send to addLoc()
    onAddPos({lat:ev.latLng.lat(),lng:ev.latLng.lng()})
