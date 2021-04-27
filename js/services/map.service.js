@@ -4,7 +4,7 @@ export const mapService = {
     initMap,
     addMarker,
     panTo,
-    getLocFromName,
+    getPosFromName,
     getLocFromPos,
     removeMarkers
 }
@@ -48,17 +48,15 @@ function panTo(lat, lng) {
     gMap.panTo(laLatLng);
 }
 
-function getLocFromName(locName){
+function getPosFromName(locName){
     const urlQuery=locName.replaceAll(' ','+')
    return axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${urlQuery}&key=${G_API_KEY}`)
     .then(res=>{
-        const loc={
-            name: res.data.results[0]['formatted_address'],
+        const pos={
             lat:res.data.results[0].geometry.location.lat,
             lng:res.data.results[0].geometry.location.lng,
         }
-        console.log(loc,'api called')
-            return loc;
+            return pos;
     })
     .catch(err=> console.log('error in finding Address, use modal to notify ',err))
 }

@@ -14,25 +14,22 @@ let gSelectedLoc;
 
 
 function getLocs() {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(gLocs);
-        }, 2000)
-    });
+    return  Promise.resolve(gLocs);
 }
 
-function addLoc(pos){
-    const loc={
+function addLoc(loc){
+    const addedLoc={
         id:utilService.makeId(),
-        name:pos.name,
-        weather:'',
-        lat:pos.lat,
-        lng:pos.lng,
+        name:loc.name,
+        weather:loc.weather,
+        lat:loc.lat,
+        lng:loc.lng,
         createdAt:Date.now(),
         updatedAt:Date.now()
     }
-    gLocs.push(loc)
+    gLocs.push(addedLoc)
     storageService.saveToStorage(LOCS_KEY,gLocs)
+    gSelectedLoc=addedLoc;
 }
 
 function removeLoc(locId){

@@ -1,5 +1,7 @@
 import { locService } from './services/loc.service.js'
 import { mapService } from './services/map.service.js'
+import { weatherService } from './services/weather.service.js'
+
 
 
 window.onload = onInit;
@@ -50,21 +52,27 @@ function catchParams(){
     const urlParams = new URLSearchParams(window.location.search);
     const latParam = urlParams.get('lat');
     const lngParam= urlParams.get('lng');
+    console.log(lngParam,latParam)
     if(!(latParam||lngParam))return
-    mapService.panTo(lat, lng)
-    onAddPos({lat:latParam,lng:lngParam})
+    mapService.panTo(latParam, lngParam)
+    onAddLoc({lat:latParam,lng:lngParam})
 }
 
 function onClickMap(ev) {//first create object with name and loc(maybe weather also) and send to addLoc()
-   onAddPos({lat:ev.latLng.lat(),lng:ev.latLng.lng()})
+   onAddLoc({lat:ev.latLng.lat(),lng:ev.latLng.lng()})
 }
 
-function onAddPos(pos){
+function onAddLoc(pos){
     mapService.getLocFromPos(pos)
     .then(loc => {
-            locService.addLoc(loc)
+            weatherService.getWeather(pos)
+            .then(weather=>{
+                loc.weather=weather
+                locService.addLoc(loc)
+                console.log(loc)
+                renderLocs()
+            })
             mapService.addMarker(pos)
-            renderLocs()
         })
 }
 
@@ -72,9 +80,14 @@ function renderLocs() {
     locService.getLocs().then(locs => {
         if (!locs.length) return
         const strHtml = locs.map(loc => {
+            if(!loc.weather) {
+                loc.weather={
+                    temp:''
+                } 
+            }
             return `<tr>
            <td>${loc.name}</td>
-           <td>Weather</td>
+           <td>${loc.weather.temp}</td>
            <td>
            <button onclick="onMoveToLoc('${loc.id}')">Go</button>
            <button onclick="onRemoveLoc('${loc.id}')">Delete</button>
@@ -103,11 +116,10 @@ function onRemoveLoc(locId) {
 function onSearchLoc(ev) {
     ev.preventDefault();
     const locName = document.querySelector('form input').value
-    mapService.getLocFromName(locName)
-        .then(loc => {
-            locService.addLoc(loc)
-            renderLocs()
-            mapService.panTo(loc.lat, loc.lng)
+    mapService.getPosFromName(locName)
+        .then(pos => {
+            onAddLoc(pos)
+            mapService.panTo(pos.lat, pos.lng)
         })
 }
 
