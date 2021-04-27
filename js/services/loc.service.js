@@ -4,11 +4,13 @@ import {storageService} from './storage.service.js'
 export const locService = {
     getLocs,
     addLoc,
-    removeLoc
+    removeLoc,
+    setSelectedLoc,
+    getSelectedLoc
 }
 const LOCS_KEY='locs';
 let gLocs = storageService.loadFromStorage(LOCS_KEY)||[];
-  
+let gSelectedLoc;
 
 
 function getLocs() {
@@ -41,5 +43,12 @@ function removeLoc(locId){
         storageService.saveToStorage(LOCS_KEY,gLocs)
     })
     
+}
+
+function setSelectedLoc(locId){
+ gSelectedLoc=gLocs.find(loc=>loc.id===locId)
+}
+function getSelectedLoc(){
+    return gSelectedLoc
 }
 

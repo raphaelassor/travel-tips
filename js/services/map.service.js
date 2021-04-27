@@ -64,8 +64,8 @@ function getLocFromName(locName){
 }
 
 function getLocFromPos(pos){
-    const lat=pos.lat()
-    const lng=pos.lng()
+    const lat=pos.lat
+    const lng=pos.lng
     return axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${G_API_KEY}`)
     .then(res=>{
         const loc={
